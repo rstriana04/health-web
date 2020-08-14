@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "health-web"
+    }
+  },
+  "defaultProject": "health-web",
+  "cli": {
+    "analytics": "44301f28-1819-4885-83a5-f5fea5a55a5b"
+  }
 }
