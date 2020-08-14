@@ -1,0 +1,56 @@
+<mat-sidenav-container class="min-vh-100">
+  <mat-sidenav
+    #sidenav
+    class="sidenav"
+    fixedInViewport="true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+  >
+    <mat-toolbar
+      class="d-flex justify-content-between cursor-pointer bg-health-red"
+      [routerLink]="'#'"
+    >
+      Health Web
+    </mat-toolbar>
+
+    <mat-nav-list role="navigation">
+      <a mat-list-item (click)="redirect('patients')">Patients</a>
+      <a mat-list-item (click)="redirect('staff')">Schedule</a>
+      <a mat-list-item (click)="redirect('appointments')">Appointments</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar class="bg-health-red">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="sidenav.toggle()"
+        *ngIf="isHandset$ | async"
+      >
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span class="d-none d-lg-block">Dashboard</span>
+      <section class="ml-auto d-flex data-basic justify-content-between">
+        <mat-divider [vertical]="true" class="mr-2 grey"></mat-divider>
+        <span class="mx-1 cursor-pointer" [matMenuTriggerFor]="menu">Test</span>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>how_to_reg</mat-icon>
+            <span>Mi Perfil</span>
+          </button>
+        </mat-menu>
+        <mat-icon class="mt-1 cursor-pointer" [matMenuTriggerFor]="menu">keyboard_arrow_down</mat-icon>
+      </section>
+      <button
+        mat-icon-button
+        class="button--logout"
+        (click)="logout()"
+      >
+        <mat-icon>power_settings_new</mat-icon>
+      </button>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,4 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.bg-health-green {
+  background-color: #8cb98c;
+  color: white;
+  }
+
+.bg-health-red {
+  background-color: #d46464;
+  color: white;
+  }
+
+.a-health-red {
+  color: #d46464;
+  }
+.a-health-red:hover {
+  cursor: pointer;
+  color:  #d46464
+  }
+
+.bg-health-gray {
+  background-color: #d6d2d2;
+  color: black;
+  }
+
+.cursor-pointer {
+  cursor: pointer;
+  }
+.text-health-red {
+  color: #d46464
+  }

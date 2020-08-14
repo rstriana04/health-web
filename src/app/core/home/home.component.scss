@@ -1,0 +1,58 @@
+.sidenav {
+  width: 200px;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, .4);
+  }
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  }
+
+.active {
+  font-weight: bold;
+  color: #3F51B5;
+  transition: color .5s;
+  }
+
+:host {
+  .mat-toolbar-row, .mat-toolbar-single-row {
+    height: 45px;
+    z-index: 100;
+    }
+
+  .mat-form-field-infix {
+    &::placeholder {
+      color: #3F51B5;
+      }
+
+    &:placeholder-shown {
+      color: #3F51B5;
+      }
+    }
+  }
+
+.data-basic {
+  font-size: .8em;
+  }
+
+.img-profile {
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  }
+
+.cursor-pointer {
+  cursor: pointer;
+  }
+
+.grey {
+  background-color: rgba(255, 255, 255, 0.2);
+  }
+
+.cached {
+  transition: all 2s;
+  transform: rotate(2turn);
+  transform-origin: center;
+  }
+
+
+
