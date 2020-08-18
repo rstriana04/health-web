@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
-import { Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { StaffScheduleService } from '../../../core/staff/services/staff-schedule.service';
+import { AttemptLoadStaffSchedules } from '../../../core/staff/store/actions/staff-schedules.actions';
+import { selectAllSchedules, selectStateStaffSchedules } from '../../../core/staff/store/selectors/staff-schedules.selectors';
+import { AppState } from '../../../store/reducers/app.reducer';
 
 const colors: any = {
   red: {
@@ -29,14 +35,13 @@ export class ScheduleComponent implements OnInit {
   view: CalendarView = CalendarView.Month;
 
   CalendarView = CalendarView;
-
+  events$: Observable<any[]> = of([]);
   viewDate: Date = new Date();
 
   modalData: {
     action: string;
     event: CalendarEvent;
   };
-
   actions: CalendarEventAction[] = [
     {
       label: '<i class="fas fa-fw fa-pencil-alt"></i>',
@@ -49,58 +54,18 @@ export class ScheduleComponent implements OnInit {
       label: '<i class="fas fa-fw fa-trash-alt"></i>',
       a11yLabel: 'Delete',
       onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter((iEvent) => iEvent !== event);
-        this.handleEvent('Deleted', event);
+
       }
     }
   ];
 
   refresh: Subject<any> = new Subject();
-
-  events: CalendarEvent[] = [
-    {
-      start: new Date(),
-      end: new Date(),
-      title: 'A 3 day event',
-      color: colors.red,
-      actions: this.actions,
-      allDay: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true
-      },
-      draggable: true
-    },
-    {
-      start: new Date(),
-      title: 'An event with no end date',
-      color: colors.yellow,
-      actions: this.actions
-    },
-    {
-      start: new Date(),
-      end: new Date(),
-      title: 'A long event that spans 2 months',
-      color: colors.blue,
-      allDay: true
-    },
-    {
-      start: new Date(),
-      end: new Date(),
-      title: 'A draggable and resizable event',
-      color: colors.yellow,
-      actions: this.actions,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true
-      },
-      draggable: true
-    }
-  ];
-
   activeDayIsOpen = true;
 
-  constructor() { }
+  constructor(
+    private store: Store<AppState>,
+    private staffScheduleService: StaffScheduleService
+  ) { }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     // if (isSameMonth(date, this.viewDate)) {
@@ -116,48 +81,18 @@ export class ScheduleComponent implements OnInit {
     // }
   }
 
-  eventTimesChanged({
-                      event,
-                      newStart,
-                      newEnd
-                    }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map((iEvent) => {
-      if ( iEvent === event ) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd
-        };
-      }
-      return iEvent;
-    });
-    this.handleEvent('Dropped or resized', event);
+  eventTimesChanged({ event, newStart, newEnd }: CalendarEventTimesChangedEvent): void {
+
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    this.modalData = { event, action };
-    // this.modal.open(this.modalContent, { size: 'lg' });
   }
 
   addEvent(): void {
-    this.events = [
-      ...this.events,
-      {
-        title: 'New event',
-        start: new Date(),
-        end: new Date(),
-        color: colors.red,
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true
-        }
-      }
-    ];
   }
 
   deleteEvent(eventToDelete: CalendarEvent) {
-    this.events = this.events.filter((event) => event !== eventToDelete);
+
   }
 
   setView(view: CalendarView) {
@@ -169,6 +104,26 @@ export class ScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(AttemptLoadStaffSchedules());
+    this.events$ = this.staffScheduleService.getScheduleByStaffFromStore().pipe(
+      map(schedules => {
+        return schedules.map((schedule, index) => {
+          return {
+            ...schedule,
+            title: `Turn ${ ++index }`,
+            draggable: true,
+            resizable: {
+              beforeStart: true,
+              afterEnd: true
+            },
+            start: new Date(`${ schedule.date } ${ schedule.timeFrom }`),
+            end: new Date(`${ schedule.date } ${ schedule.timeUntil }`),
+            actions: this.actions,
+            color: colors.blue
+          };
+        });
+      })
+    );
+    this.refresh.next();
   }
-
 }

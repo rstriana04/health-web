@@ -32,9 +32,9 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span class="d-none d-lg-block">Dashboard</span>
-      <section class="ml-auto d-flex data-basic justify-content-between">
+      <section class="ml-auto d-flex data-basic justify-content-between" *ngIf="user$ | async as user">
         <mat-divider [vertical]="true" class="mr-2 grey"></mat-divider>
-        <span class="mx-1 cursor-pointer" [matMenuTriggerFor]="menu">Test</span>
+        <span class="mx-1 cursor-pointer" [matMenuTriggerFor]="menu">{{user.username}}</span>
         <mat-menu #menu="matMenu">
           <button mat-menu-item>
             <mat-icon>how_to_reg</mat-icon>

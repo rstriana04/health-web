@@ -1,6 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { ToastrService } from 'ngx-toastr';
+import { AppState } from '../../store/reducers/app.reducer';
+import { LogInService } from './services/log-in.service';
+import { AuthUserAction } from './store/actions/log-in.actions';
 
 @Component({
   selector: 'health-sign-in',
@@ -13,7 +18,10 @@ export class LogInComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private logInService: LogInService,
+    private toastService: ToastrService,
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
@@ -26,14 +34,14 @@ export class LogInComponent implements OnInit {
 
   private initFormLogin() {
     this.formLogin = new FormGroup({
-      user: new FormControl('', Validators.compose([Validators.required, Validators.minLength(3)])),
+      email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
       password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(3)]))
     });
   }
 
   public sendFormLogin(formLogin: FormGroup) {
-    if (formLogin.valid) {
-      this.router.navigate(['./home']);
+    if ( formLogin.valid ) {
+      this.store.dispatch(AuthUserAction({ credentials: formLogin.value }));
     }
   }
 }

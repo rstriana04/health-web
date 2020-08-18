@@ -1,48 +1,30 @@
 <h1 mat-dialog-title>Create Schedule</h1>
 <div class="container">
-  <div class="row">
-    <div class="col-4">
-      <section class="example-section">
-  <span class="example-list-section">
-    <mat-checkbox class="example-margin"
-                  [checked]="allComplete"
-                  [indeterminate]="someComplete()"
-                  (change)="setAll($event.checked)">
-      {{task.name}}
-    </mat-checkbox>
-  </span>
-        <span class="example-list-section">
-    <ul>
-      <li *ngFor="let subtask of task.subtasks">
-        <mat-checkbox [(ngModel)]="subtask.completed"
-                      [color]="subtask.color"
-                      (ngModelChange)="updateAllComplete()">
-          {{subtask.name}}
-        </mat-checkbox>
-      </li>
-    </ul>
-  </span>
-      </section>
-    </div>
-    <div class="col-8">
+  <form [formGroup]="formSchedule" (ngSubmit)="sendFormSchedule(formSchedule)">
+    <div class="row">
+      <div class="col-4">
+        <health-select-days (daysSelected)="setDaysSelected($event)"></health-select-days>
+      </div>
+      <div class="col-8">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Date From</mat-label>
-          <input type="datetime-local" matInput>
+          <input type="datetime-local" matInput formControlName="dateFrom">
         </mat-form-field>
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Date Until</mat-label>
-        <input type="datetime-local" matInput>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Interval</mat-label>
-        <input type="number" matInput placeholder="Please add a interval">
-      </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Date Until</mat-label>
+          <input type="datetime-local" matInput formControlName="dateUntil">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Interval</mat-label>
+          <input type="number" matInput placeholder="Please add a interval" formControlName="interval">
+        </mat-form-field>
+      </div>
     </div>
-  </div>
-  <mat-dialog-actions class="d-flex justify-content-between mx-auto align-items-center">
-    <p class="text-health-red font-weight-bold">Amount Appointments: 16</p>
-    <button mat-flat-button color="light" class="bg-health-red">
-      Send
-    </button>
-  </mat-dialog-actions>
+    <mat-dialog-actions class="d-flex justify-content-between mx-auto align-items-center">
+      <p class="text-health-red font-weight-bold">Amount Appointments: 16</p>
+      <button mat-flat-button color="light" class="bg-health-red" type="submit" [disabled]="!formSchedule.valid">
+        Send
+      </button>
+    </mat-dialog-actions>
+  </form>
 </div>
