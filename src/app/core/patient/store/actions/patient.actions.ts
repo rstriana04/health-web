@@ -6,4 +6,5 @@ export const AttemptLoadAllPatients = createAction('[Patients] Attempt Load All 
 export const SuccessfulAttemptLoadAllPatients =
   createAction('[Patients] Successful Attempt Load All Patients', props<{ patients: Patient[] }>());
 export const FailedAttemptLoadAllPatients = createAction('[Patients] Failed attempt Load All Patients', props<{ message: string }>());
+export const AddSelectedPatient = createAction('[Patients] Add Selected Patient', props<{patient: Patient}>());
 

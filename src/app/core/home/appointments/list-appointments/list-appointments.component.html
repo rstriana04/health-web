@@ -4,259 +4,60 @@
       <h3 style="color: gray" class="m-0">Citas agendadas: 6</h3>
     </div>
     <div class="col-2 d-flex justify-content-end">
-      <button mat-mini-fab color="light" class="bg-health-red">
-        <mat-icon >add_outline</mat-icon>
+      <button mat-mini-fab color="light" class="bg-health-red" (click)="addAppointment()">
+        <mat-icon>add_outline</mat-icon>
       </button>
     </div>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="appointments$ | async as appointments">
     <div class="col-8" style="max-height: 80vh; overflow-y: auto">
-      <mat-card class="w-full my-2">
+      <mat-card class="w-full my-2" *ngFor="let appointment of appointments"
+                (click)="addSelectedAppointment(appointment)">
         <mat-card-content>
           <div class="row">
             <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
+              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle"
+                   style="max-width: 50px; max-height: 50px"
                    alt="">
-
-<!--              <div class="img-rounded bg-health-red">-->
-<!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
               <!--              <div class="img-rounded bg-health-red">-->
               <!--              </div>-->
             </div>
             <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
+              <h3 class="m-0">{{appointment.patient.name}} {{appointment.patient.lastName}}</h3>
+              <h4 class="m-0">{{appointment.patient.gender}} - {{calculateAge(appointment.patient.dateBirth)}}</h4>
             </div>
             <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
+              <ng-container *ngIf="appointment.citationType === 'video'; else phone">
+                <mat-icon>videocam</mat-icon>
+              </ng-container>
+              <ng-template #phone>
+                <mat-icon>call</mat-icon>
+              </ng-template>
             </div>
           </div>
         </mat-card-content>
       </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card class="w-full my-2">
-        <mat-card-content>
-          <div class="row">
-            <div class="col-2 p-0 d-flex mx-auto justify-content-center align-items-center">
-              <img src="../../../../../assets/images/health-logo.png" class="img-fluid rounded-circle" style="max-width: 50px; max-height: 50px"
-                   alt="">
-
-              <!--              <div class="img-rounded bg-health-red">-->
-              <!--              </div>-->
-            </div>
-            <div class="col-8 p-0">
-              <h3 class="m-0">Robert Triana</h3>
-              <h4 class="m-0">Male - 21 years - Cartago Valle</h4>
-            </div>
-            <div class="col-2 d-flex mx-auto justify-content-center align-items-center">
-              <mat-icon>videocam</mat-icon>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
     </div>
-    <div class="col-4 d-flex mx-auto justify-content-center align-items-center">
+    <div class="col-4 d-flex mx-auto justify-content-center align-items-center" *ngIf="selectedAppointment$ | async
+    as selectedAppointment">
       <div style="color: gray; font-size: 25px"
            class="d-flex mx-auto text-center justify-content-center align-items-center">
-        <p> Select a Patient to review their details...</p>
+        <ul>
+          <li>Patient: {{selectedAppointment.patient.name}} {{selectedAppointment.patient.lastName}}</li>
+          <li>Phone: {{selectedAppointment.patient.phone}}</li>
+          <li>Gender: {{selectedAppointment.patient.gender}}</li>
+          <li>Date Birth: {{selectedAppointment.patient.dateBirth | date: 'mediumDate'}}</li>
+        </ul>
+        <ul>
+          <li>Professional: {{selectedAppointment.user.name}} {{selectedAppointment.user.lastName}}</li>
+          <li>Phone: {{selectedAppointment.user.phone}}</li>
+          <li>Email: {{selectedAppointment.user.email}}</li>
+          <li>Dni: {{selectedAppointment.user.dni}}</li>
+        </ul>
+        <ul>
+          <li>Appointment Type: {{selectedAppointment.citationType}}</li>
+          <li>Date: {{selectedAppointment.citation | date: 'mediumDate'}}</li>
+        </ul>
       </div>
     </div>
   </div>

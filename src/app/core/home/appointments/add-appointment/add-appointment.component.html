@@ -1,0 +1,38 @@
+<div class="container">
+  <h2>Add Appointment</h2>
+  <div class="row">
+    <div class="col-8">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Select a Patient</mat-label>
+        <mat-select>
+          <ng-container *ngFor="let patient of patients$ | async">
+            <mat-option [value]="patient" (onSelectionChange)="selectedPatient(patient, $event)">{{patient.name}}
+              {{patient.lastName}}</mat-option>
+          </ng-container>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-2">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Select a type</mat-label>
+        <mat-select>
+          <mat-option (onSelectionChange)="setType(type)" [value]="type"
+                      *ngFor="let type of citationTypes">{{type}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-2 d-flex justify-content-center mx-auto align-items-center">
+      <button mat-flat-button color="light" class="bg-health-red btn-block">
+        Save
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-8">
+      <health-schedule></health-schedule>
+    </div>
+    <div class="col-4">
+      <health-turns-list *ngFor="let schedule of schedule$ | async" [schedule]="schedule"></health-turns-list>
+    </div>
+  </div>
+</div>

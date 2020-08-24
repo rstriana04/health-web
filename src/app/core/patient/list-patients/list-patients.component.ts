@@ -33,7 +33,7 @@ export class ListPatientsComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(AttemptLoadAllPatients());
-    this.patientService.getPatientByStaffFromStore().subscribe(patients => {
+    this.patientService.getPatientsByStaffFromStore().subscribe(patients => {
       this.dataSource = new MatTableDataSource(patients);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
@@ -55,4 +55,7 @@ export class ListPatientsComponent implements OnInit {
       height: 'auto'
     });
   }
+
+
+
 }

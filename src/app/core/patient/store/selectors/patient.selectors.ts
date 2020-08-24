@@ -15,3 +15,5 @@ export const selectAllPatients = selectAll;
 export const selectAllPatientsByStaff = createSelector(selectAllPatients, (patients: Patient[], props: { user: number }) => {
   return patients.filter(patient => patient.user.id === props.user);
 });
+
+export const selectPatientSelected = createSelector(selectStatePatient, state => state.selectedPatient);

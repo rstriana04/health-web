@@ -17,7 +17,11 @@ export const initialStatePatient: PatientState = adapterPatient.getInitialState(
 
 const reducer = createReducer(initialStatePatient,
   on(PatientActions.AddPatient, (state, { patient }) => adapterPatient.setOne(patient, state)),
-  on(PatientActions.SuccessfulAttemptLoadAllPatients, (state, { patients }) => adapterPatient.setAll(patients, state))
+  on(PatientActions.SuccessfulAttemptLoadAllPatients, (state, { patients }) => adapterPatient.setAll(patients, state)),
+  on(PatientActions.AddSelectedPatient, (state, { patient }) => ( {
+    ...state,
+    selectedPatient: patient
+  } ))
 );
 
 export function PatientReducer(state: PatientState | undefined, action: Action) {

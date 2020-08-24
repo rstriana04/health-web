@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
 import { SharedModule } from '../../shared/shared.module';
+import { AppointmentEffects } from '../home/appointments/store/effects/appointment.effects';
 import { AddScheduleComponent } from './add-schedule/add-schedule.component';
 
 import { StaffRoutingModule } from './staff-routing.module';
@@ -18,7 +19,7 @@ import { StaffSchedulesEffects } from './store/effects/staff-schedules.effects';
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    EffectsModule.forFeature([StaffSchedulesEffects])
+    EffectsModule.forFeature([StaffSchedulesEffects, AppointmentEffects])
   ]
 })
 export class StaffModule {}

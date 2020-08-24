@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
+import * as moment from 'moment';
 import { Observable, of, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
+import { AppointmentsService } from '../../../core/home/appointments/services/appointments.service';
 import { StaffScheduleService } from '../../../core/staff/services/staff-schedule.service';
-import { AttemptLoadStaffSchedules } from '../../../core/staff/store/actions/staff-schedules.actions';
-import { selectAllSchedules, selectStateStaffSchedules } from '../../../core/staff/store/selectors/staff-schedules.selectors';
+import { AddScheduleSelected, AttemptLoadStaffSchedules } from '../../../core/staff/store/actions/staff-schedules.actions';
 import { AppState } from '../../../store/reducers/app.reducer';
 
 const colors: any = {
@@ -64,10 +65,23 @@ export class ScheduleComponent implements OnInit {
 
   constructor(
     private store: Store<AppState>,
-    private staffScheduleService: StaffScheduleService
+    private staffScheduleService: StaffScheduleService,
+    private appointmentService: AppointmentsService
   ) { }
 
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+  dayClicked(event): void {
+    const scheduleEvent = {
+      ...event.day,
+      date: event.day.date.toISOString(),
+      events: event.day.events.map(e => {
+        return {
+          ...e,
+          start: e.start.toISOString(),
+          end: e.end.toISOString()
+        };
+      })
+    };
+    this.store.dispatch(AddScheduleSelected({ schedule: scheduleEvent }));
     // if (isSameMonth(date, this.viewDate)) {
     //   if (
     //     (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
@@ -106,23 +120,27 @@ export class ScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(AttemptLoadStaffSchedules());
     this.events$ = this.staffScheduleService.getScheduleByStaffFromStore().pipe(
-      map(schedules => {
-        return schedules.map((schedule, index) => {
-          return {
-            ...schedule,
-            title: `Turn ${ ++index }`,
-            draggable: true,
-            resizable: {
-              beforeStart: true,
-              afterEnd: true
-            },
-            start: new Date(`${ schedule.date } ${ schedule.timeFrom }`),
-            end: new Date(`${ schedule.date } ${ schedule.timeUntil }`),
-            actions: this.actions,
-            color: colors.blue
-          };
-        });
-      })
+      switchMap(schedules => this.appointmentService.getAllAppointmentsFromStore().pipe(
+        first(),
+        map(appointments => {
+          return schedules.map((schedule, index) => {
+            return {
+              title: `Turn ${ ++index }`,
+              draggable: true,
+              resizable: {
+                beforeStart: true,
+                afterEnd: true
+              },
+              start: new Date(`${ schedule.date } ${ schedule.timeFrom }`),
+              end: new Date(`${ schedule.date } ${ schedule.timeUntil }`),
+              actions: this.actions,
+              color: colors.blue,
+              appointments: appointments.filter(
+                appointment => moment(appointment.citation).format('YYYY-MM-DD') === moment(schedule.date).format('YYYY-MM-DD'))
+            };
+          });
+        })
+      ))
     );
     this.refresh.next();
   }

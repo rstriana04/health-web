@@ -5,6 +5,7 @@ export interface StaffSchedule {
   date: string;
   timeFrom: string;
   timeUntil: string;
+  interval: number;
   user?: User;
   valid?: boolean;
   day?: number;

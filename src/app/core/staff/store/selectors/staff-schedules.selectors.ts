@@ -12,3 +12,4 @@ const {
 } = adapterStaffSchedules.getSelectors();
 
 export const selectAllSchedules = selectAll;
+export const selectStaffScheduleSelected = createSelector(selectStateStaffSchedules, state => state.scheduleSelected);

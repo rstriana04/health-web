@@ -1,0 +1,38 @@
+<div class="content overflow-y-scroll p-2">
+<!--  <mat-card class="mt-2 mb-2">-->
+<!--    <mat-card-header class="d-flex justify-content-between align-items-center m-0">-->
+<!--      <mat-chip-list>-->
+<!--        <mat-chip color="primary">-->
+<!--          21:00 AM-->
+<!--        </mat-chip>-->
+<!--      </mat-chip-list>-->
+<!--    </mat-card-header>-->
+
+<!--    <mat-card-content class="d-flex flex-nowrap align-items-center justify-content-between">-->
+<!--      <mat-chip-list class="cursor-pointer m-0 mt-2 mb-1">-->
+<!--        <mat-chip>-->
+<!--          <mat-icon>perm_contact_calendar</mat-icon>-->
+<!--          Robert Sty Triana-->
+<!--        </mat-chip>-->
+<!--      </mat-chip-list>-->
+<!--    </mat-card-content>-->
+<!--  </mat-card>-->
+  <mat-card class="mt-2 mb-2" *ngFor="let turn of schedule">
+    <mat-card-header class="d-flex justify-content-end align-items-end m-0">
+      <mat-chip-list>
+        <mat-chip color="primary">
+          {{turn.hour | date : 'HH:mm a'}}
+        </mat-chip>
+      </mat-chip-list>
+    </mat-card-header>
+
+    <mat-card-content class="d-flex flex-nowrap align-items-center justify-content-between">
+      <button mat-raised-button color="light" class="bg-health-red" (click)="scheduleAppointment(turn)">
+        <mat-icon aria-hidden="false" aria-label="Scheduling" class="mr-2"
+        >calendar_today
+        </mat-icon>
+        Schedule
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>

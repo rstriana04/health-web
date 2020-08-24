@@ -20,7 +20,7 @@ export class PatientService {
     private store: Store<AppState>
   ) { }
 
-  getPatientByStaffFromStore(): Observable<Patient[]> {
+  getPatientsByStaffFromStore(): Observable<Patient[]> {
     return this.store.pipe(
       select(selectUserAuthenticated),
       filter(user => !!user),
