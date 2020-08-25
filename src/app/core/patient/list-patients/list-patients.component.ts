@@ -17,7 +17,7 @@ import { AttemptLoadAllPatients } from '../store/actions/patient.actions';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListPatientsComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'lastName', 'phone', 'gender', 'dateBirth', 'createdAt', 'updatedAt'];
+  displayedColumns: string[] = ['id', 'name', 'lastName', 'phone', 'gender', 'dateBirth', 'update', 'delete'];
   dataSource = new MatTableDataSource();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -56,6 +56,15 @@ export class ListPatientsComponent implements OnInit {
     });
   }
 
+  public updatePatient(row: any) {
+    console.log(row);
+  }
 
+  public deletePatient(row: any) {
+    this.patientService.deletePatient(row.id).subscribe(success => {
 
+    }, error => {
+      console.error(error);
+    });
+  }
 }

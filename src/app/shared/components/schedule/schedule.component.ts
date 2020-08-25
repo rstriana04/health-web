@@ -128,10 +128,10 @@ export class ScheduleComponent implements OnInit {
           return {
             ...schedule,
             title: `Turn ${ ++index }`,
-            draggable: true,
+            draggable: false,
             resizable: {
-              beforeStart: true,
-              afterEnd: true
+              beforeStart: false,
+              afterEnd: false
             },
             start: new Date(`${ schedule.date } ${ schedule.timeFrom }`),
             end: new Date(`${ schedule.date } ${ schedule.timeUntil }`),

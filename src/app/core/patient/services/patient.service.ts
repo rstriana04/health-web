@@ -66,4 +66,20 @@ export class PatientService {
 
   }
 
+  updatePatient(patient: Patient): Observable<Patient> {
+    return this.httpClient.put<Patient>(`${ environment.apiUrl }/${ environment.apiPrefix }/patients`, patient, {
+      observe: 'response',
+      responseType: 'json'
+    }).pipe(pluck('body'));
+  }
+
+  deletePatient(patientId: number): Observable<any> {
+    return this.httpClient.delete(`${ environment.apiUrl }/${ environment.apiPrefix }/patients/${ patientId }`, {
+      observe: 'response',
+      responseType: 'json'
+    }).pipe(
+      pluck('body')
+    );
+  }
+
 }

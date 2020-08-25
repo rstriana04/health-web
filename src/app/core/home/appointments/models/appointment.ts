@@ -7,4 +7,6 @@ export interface Appointment {
   citationType: string;
   user: User;
   patient: Patient;
+  code?: string;
+  message?: string;
 }

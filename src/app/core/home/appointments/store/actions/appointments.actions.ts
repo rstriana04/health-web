@@ -9,3 +9,5 @@ export const FailedAttemptGetAllAppointmentsAction = createAction('[Appointments
 export const AddSelectedAppointment = createAction('[Appointments] Add Selected Appointment', props<{ appointment: Appointment }>());
 export const AddCitationType = createAction('[Appointments] Add Citation type', props<{ citationType: string }>());
 export const AddAppointment = createAction('[Appointments] Add Appointment', props<{appointment: Appointment}>());
+export const RemoveAppointment = createAction('[Appointments] Remove Appointment', props<{id: number}>());
+export const RemoveSelectedAppointment = createAction('[Appointments] Remove Selected Appointment');

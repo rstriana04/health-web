@@ -67,6 +67,11 @@
               <li>Date: {{selectedAppointment.citation | date: 'mediumDate'}}</li>
             </ul>
           </div>
+          <div class="col-12 d-flex justify-content-end align-items-end">
+            <button mat-flat-button color="light" class="bg-health-red" (click)="deleteAppointment(selectedAppointment)">
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </div>

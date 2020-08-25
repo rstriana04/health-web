@@ -38,23 +38,6 @@ export class AddAppointmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appointmentService.createConnectionSocket();
-    this.appointmentService.getAppointments().pipe(
-      filter(response => !!response),
-      map(response => {
-        return response as unknown as Appointment;
-      })
-    ).subscribe(appointment => {
-      if ( appointment && Object.keys(appointment).length ) {
-        this.store.dispatch(AddAppointment({ appointment }));
-        this.toastService.info('¡New Appointment!', '¡Info!', {
-          progressBar: true,
-          timeOut: 9000,
-          progressAnimation: 'decreasing',
-          closeButton: true
-        });
-      }
-    });
     this.schedule$ = this.getSchedule();
     this.patients$ = this.patientService.getPatientsByStaffFromStore();
   }

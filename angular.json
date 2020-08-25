@@ -18,7 +18,12 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "lodash"
+              "lodash",
+              "dom-set",
+              "dom-plane",
+              "calendar-utils/date-adapters/date-fns",
+              "angular-calendar/date-adapters/date-fns",
+              "@mattlewis92/dom-autoscroller"
             ],
             "outputPath": "dist/health-web",
             "index": "src/index.html",

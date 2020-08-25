@@ -31,6 +31,11 @@ const reducer = createReducer(initialStateAppointment,
   on(AppointmentActions.AddCitationType, (state, { citationType }) => ( {
     ...state,
     citationType
+  } )),
+  on(AppointmentActions.RemoveAppointment, (state, { id }) => adapterAppointment.removeOne(id, state)),
+  on(AppointmentActions.RemoveSelectedAppointment, (state) => ( {
+    ...state,
+    selectedAppointment: undefined
   } ))
 );
 
