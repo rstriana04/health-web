@@ -74,4 +74,11 @@ export class StaffScheduleService {
     );
   }
 
+  deleteSchedule(id: number): Observable<any> {
+    return this.httpClient.delete(`${ environment.apiUrl }/${ environment.apiPrefix }/schedules/${ id }`, {
+      observe: 'response',
+      responseType: 'json'
+    }).pipe(pluck('body'));
+  }
+
 }

@@ -6,7 +6,7 @@ import * as LogInActions from '../actions/log-in.actions';
 export interface LogInState {
   credentials: LogIn;
   userAuthenticated: User;
-  message: string;
+  message: {message: string, status: number};
 }
 
 const initialStateLogIn: LogInState = {

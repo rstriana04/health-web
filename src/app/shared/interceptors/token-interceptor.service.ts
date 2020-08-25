@@ -28,13 +28,13 @@ export class TokenInterceptorService implements HttpInterceptor {
       } else {
         console.warn('Token Not Found');
         // Logout
-        // this.logInService.logout();
+        this.logInService.logout();
         return next.handle(req);
       }
     } catch ( e ) {
       console.error('Authentication Not Found');
       // Logout
-      // this.logInService.logout();
+      this.logInService.logout();
       return next.handle(req);
     }
   }

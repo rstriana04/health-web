@@ -10,7 +10,7 @@ export interface StaffScheduleEvent {
   end: string;
   id: number;
   interval: number;
-  resizable: { beforeStart: true, afterEnd: true };
+  resizable: { beforeStart: boolean, afterEnd: boolean };
   start: string;
   timeFrom: string;
   timeUntil: string;

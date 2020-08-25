@@ -11,3 +11,4 @@ export const AddSchedulesAction = createAction('[Staff Schedule] Add Schedules',
 
 export const AddScheduleSelected = createAction('[Staff Schedule] Add Schedule Selected', props<{ schedule: DayEvent }>());
 export const AddDateSelected = createAction('[Staff Schedule] Add Date Selected', props<{ dateSelected: string }>());
+export const RemoveSchedule = createAction('[Staff Schedule] Remove Schedule', props<{id: number}>());

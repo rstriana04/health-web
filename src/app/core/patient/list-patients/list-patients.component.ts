@@ -5,10 +5,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
+import { ToastrService } from 'ngx-toastr';
+import { PopupDeleteConfirmationComponent } from '../../../shared/components/popup-delete-confirmation/popup-delete-confirmation.component';
 import { AppState } from '../../../store/reducers/app.reducer';
 import { AddPatientComponent } from '../add-patient/add-patient.component';
 import { PatientService } from '../services/patient.service';
-import { AttemptLoadAllPatients } from '../store/actions/patient.actions';
+import { AttemptLoadAllPatients, RemovePatient } from '../store/actions/patient.actions';
 
 @Component({
   selector: 'health-list-patients',
@@ -26,7 +28,8 @@ export class ListPatientsComponent implements OnInit {
   constructor(
     private matDialog: MatDialog,
     private patientService: PatientService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private toastService: ToastrService
   ) {
 
   }
@@ -57,14 +60,38 @@ export class ListPatientsComponent implements OnInit {
   }
 
   public updatePatient(row: any) {
-    console.log(row);
+    this.matDialog.open(AddPatientComponent, {
+      width: '400px',
+      height: 'auto',
+      data: { ...row }
+    });
   }
 
   public deletePatient(row: any) {
-    this.patientService.deletePatient(row.id).subscribe(success => {
-
-    }, error => {
-      console.error(error);
+    const dialogRef = this.matDialog.open(PopupDeleteConfirmationComponent, {
+      width: '250px'
+    });
+    dialogRef.afterClosed().subscribe(response => {
+      console.log(response);
+      if ( response ) {
+        this.patientService.deletePatient(row.id).subscribe(success => {
+          this.store.dispatch(RemovePatient({ id: row.id }));
+          this.toastService.success(`Successfully delete patient`, '¡Success!', {
+            closeButton: true,
+            timeOut: 9000,
+            progressAnimation: 'decreasing',
+            progressBar: true
+          });
+        }, error => {
+          this.toastService.error('¡An error occurred while deleting the patient, check for associated appointments!', '¡Oops, error!', {
+            closeButton: true,
+            timeOut: 9000,
+            progressAnimation: 'decreasing',
+            progressBar: true
+          });
+          console.error(error);
+        });
+      }
     });
   }
 }

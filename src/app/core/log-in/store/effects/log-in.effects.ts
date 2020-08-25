@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import { Toast, ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AppState } from '../../../../store/reducers/app.reducer';
@@ -22,8 +23,23 @@ export class LogInEffects {
             return AuthUserSuccessAction({ credentials: response });
           }),
           catchError((httpErrorResponse: HttpErrorResponse) => {
+            if ( httpErrorResponse.error.status === 403 ) {
+              this.toastService.error('¡Bad Credentials, please verify!', '¡Oops, error!', {
+                closeButton: true,
+                progressAnimation: 'decreasing',
+                timeOut: 9000,
+                progressBar: true
+              });
+            } else {
+              this.toastService.error('¡Error login!', '¡Oops, error!', {
+                closeButton: true,
+                progressAnimation: 'decreasing',
+                timeOut: 9000,
+                progressBar: true
+              });
+            }
             return of(
-              AuthUserFailedAction({ message: httpErrorResponse.error.message }
+              AuthUserFailedAction({ message: { message: httpErrorResponse.error.message, status: httpErrorResponse.error.status } }
               ));
           })
         )
@@ -35,7 +51,8 @@ export class LogInEffects {
     private actions$: Actions,
     private logInService: LogInService,
     private store: Store<AppState>,
-    private router: Router
+    private router: Router,
+    private toastService: ToastrService
   ) {}
 
 }

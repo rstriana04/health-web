@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PatientService } from '../services/patient.service';
 
@@ -14,12 +16,28 @@ export class AddPatientComponent implements OnInit {
 
   constructor(
     private toastService: ToastrService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.initFormAddPatient();
   }
 
   ngOnInit(): void {
+    if ( this.data && Object.keys(this.data).length ) {
+      const patientReceived = {
+        ...this.data,
+        id: undefined,
+        user: undefined,
+        createdAt: undefined,
+        updatedAt: undefined
+      };
+      delete patientReceived.id;
+      delete patientReceived.user;
+      delete patientReceived.createdAt;
+      delete patientReceived.updatedAt;
+      this.formAddPatient.setValue(patientReceived);
+      this.formAddPatient.disable({ onlySelf: true, emitEvent: true });
+    }
   }
 
   private initFormAddPatient() {
@@ -34,24 +52,55 @@ export class AddPatientComponent implements OnInit {
 
   public sendFormAddPatient(formAddPatient: FormGroup) {
     if ( formAddPatient.valid ) {
-      const patient = { ...formAddPatient.value, dateBirth: formAddPatient.value.dateBirth.toISOString() };
-      this.patientService.createPatient(patient).subscribe(() => {
-        this.toastService.success(`Successfully created patient`, '¡Success!', {
-          closeButton: true,
-          timeOut: 9000,
-          progressAnimation: 'decreasing',
-          progressBar: true
+      if ( this.data && Object.keys(this.data).length ) {
+        const dateBirth = typeof formAddPatient.value.dateBirth === 'string'
+                          ? formAddPatient.value.dateBirth
+                          : formAddPatient.value.dateBirth.toISOString();
+        const patient = { ...this.data, ...formAddPatient.value, dateBirth };
+        this.patientService.updatePatient(patient).subscribe(() => {
+          this.toastService.success(`Successfully update patient`, '¡Success!', {
+            closeButton: true,
+            timeOut: 9000,
+            progressAnimation: 'decreasing',
+            progressBar: true
+          });
+        }, error => {
+          this.toastService.error('Failed update patient', '¡Oops, error!', {
+            closeButton: true,
+            timeOut: 9000,
+            progressAnimation: 'decreasing',
+            progressBar: true
+          });
+          console.error(error);
         });
-        this.formAddPatient.reset();
-      }, error => {
-        this.toastService.error('Failed created patient', '¡Oops, error!', {
-          closeButton: true,
-          timeOut: 9000,
-          progressAnimation: 'decreasing',
-          progressBar: true
+      } else {
+        const patient = { ...formAddPatient.value, dateBirth: formAddPatient.value.dateBirth.toISOString() };
+        this.patientService.createPatient(patient).subscribe(() => {
+          this.toastService.success(`Successfully created patient`, '¡Success!', {
+            closeButton: true,
+            timeOut: 9000,
+            progressAnimation: 'decreasing',
+            progressBar: true
+          });
+          this.formAddPatient.reset();
+        }, error => {
+          this.toastService.error('Failed created patient', '¡Oops, error!', {
+            closeButton: true,
+            timeOut: 9000,
+            progressAnimation: 'decreasing',
+            progressBar: true
+          });
+          console.error(error);
         });
-        console.error(error);
-      });
+      }
+    }
+  }
+
+  public updateForm($event: MatCheckboxChange) {
+    if ( $event.checked ) {
+      this.formAddPatient.enable({ emitEvent: true, onlySelf: true });
+    } else {
+      this.formAddPatient.disable({ emitEvent: true, onlySelf: true });
     }
   }
 }

@@ -6,9 +6,10 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { MaterialModule } from './modules/material/material.module';
 import { ScheduleComponent } from './components/schedule/schedule.component';
 import { SelectDaysComponent } from './components/select-days/select-days.component';
+import { PopupDeleteConfirmationComponent } from './components/popup-delete-confirmation/popup-delete-confirmation.component';
 
 @NgModule({
-  declarations: [ScheduleComponent, SelectDaysComponent],
+  declarations: [ScheduleComponent, SelectDaysComponent, PopupDeleteConfirmationComponent],
   imports: [
     CommonModule,
     MaterialModule,

@@ -16,7 +16,7 @@ export const AuthUserAction = createAction(LogInActionsTypes.SET_AUTH_USER, prop
 
 export const AuthUserSuccessAction = createAction(LogInActionsTypes.SET_AUTH_USER_SUCCESS, props<{ credentials: LogIn }>());
 
-export const AuthUserFailedAction = createAction(LogInActionsTypes.SET_AUTH_USER_FAILED, props<{ message: string }>());
+export const AuthUserFailedAction = createAction(LogInActionsTypes.SET_AUTH_USER_FAILED, props<{ message: {message: string, status: number} }>());
 
 export const GetUserAuthenticatedAction = createAction(LogInActionsTypes.GET_USER_AUTHENTICATED, props<{ token: string }>());
 export const GetUserAuthenticatedSuccessAction = createAction(LogInActionsTypes.GET_USER_AUTHENTICATED_SUCCESS, props<{ user: User}>());

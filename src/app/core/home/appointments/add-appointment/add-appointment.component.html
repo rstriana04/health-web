@@ -1,7 +1,7 @@
 <div class="container">
   <h2>Add Appointment</h2>
   <div class="row">
-    <div class="col-8">
+    <div class="col-xl-8 col-lg-8 col-md-8 col-12">
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Select a Patient</mat-label>
         <mat-select>
@@ -12,7 +12,7 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="col-2">
+    <div class="col-xl-2 col-lg-2 col-md-2 col-12">
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Select a type</mat-label>
         <mat-select>
@@ -21,17 +21,17 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="col-2 d-flex justify-content-center mx-auto align-items-center">
+    <div class="col-xl-2 col-lg-2 col-md-2 col-12 d-flex justify-content-center mx-auto align-items-center">
       <button mat-flat-button color="light" class="bg-health-red btn-block" (click)="back()">
         Back
       </button>
     </div>
   </div>
-  <div class="row">
-    <div class="col-8">
+  <div class="row mt-2">
+    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12">
       <health-schedule></health-schedule>
     </div>
-    <div class="col-4">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12">
       <health-turns-list *ngFor="let schedule of schedule$ | async" [schedule]="schedule"></health-turns-list>
     </div>
   </div>

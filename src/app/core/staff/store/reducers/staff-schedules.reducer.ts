@@ -32,7 +32,8 @@ const reducer = createReducer(initialStateStaffSchedules,
   on(StaffSchedulesAction.AddDateSelected, (state, { dateSelected }) => ( {
     ...state,
     dateSelected
-  } ))
+  } )),
+  on(StaffSchedulesAction.RemoveSchedule, (state, { id }) => adapterStaffSchedules.removeOne(id, state))
 );
 
 export function StaffSchedulesReducer(state: StaffSchedulesState | undefined, action: Action) {

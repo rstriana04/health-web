@@ -16,12 +16,13 @@ export const initialStatePatient: PatientState = adapterPatient.getInitialState(
 );
 
 const reducer = createReducer(initialStatePatient,
-  on(PatientActions.AddPatient, (state, { patient }) => adapterPatient.setOne(patient, state)),
+  on(PatientActions.AddPatient, (state, { patient }) => adapterPatient.upsertOne(patient, state)),
   on(PatientActions.SuccessfulAttemptLoadAllPatients, (state, { patients }) => adapterPatient.setAll(patients, state)),
   on(PatientActions.AddSelectedPatient, (state, { patient }) => ( {
     ...state,
     selectedPatient: patient
-  } ))
+  } )),
+  on(PatientActions.RemovePatient, (state, { id }) => adapterPatient.removeOne(id, state))
 );
 
 export function PatientReducer(state: PatientState | undefined, action: Action) {

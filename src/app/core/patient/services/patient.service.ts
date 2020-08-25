@@ -70,7 +70,7 @@ export class PatientService {
     return this.httpClient.put<Patient>(`${ environment.apiUrl }/${ environment.apiPrefix }/patients`, patient, {
       observe: 'response',
       responseType: 'json'
-    }).pipe(pluck('body'));
+    }).pipe(pluck('body'), tap(() => this.store.dispatch(AddPatient({ patient }))));
   }
 
   deletePatient(patientId: number): Observable<any> {

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, of } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
@@ -14,8 +15,7 @@ import {
   RemoveAppointment,
   RemoveSelectedAppointment
 } from '../store/actions/appointments.actions';
-import { selectSelectedAppointment } from '../store/selectors/appointment.selectors';
-import * as moment from 'moment';
+import { selectAppointmentState, selectSelectedAppointment, selectTotalAppointments } from '../store/selectors/appointment.selectors';
 
 @Component({
   selector: 'health-list-appointments',
@@ -26,6 +26,7 @@ import * as moment from 'moment';
 export class ListAppointmentsComponent implements OnInit {
   appointments$: Observable<Appointment[]>;
   selectedAppointment$: Observable<Appointment>;
+  totalAppointments$: Observable<number> = of(0);
 
   constructor(
     private matDialog: MatDialog,
@@ -37,6 +38,7 @@ export class ListAppointmentsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.totalAppointments$ = this.store.pipe(select(selectAppointmentState), select(selectTotalAppointments));
     this.appointments$ = this.appointmentService.getAllAppointmentsFromStore();
     this.selectedAppointment$ = this.store.pipe(select(selectSelectedAppointment));
     this.appointmentService.createConnectionSocket();

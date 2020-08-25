@@ -14,6 +14,7 @@ const {
 } = adapterAppointment.getSelectors();
 
 export const selectAllAppointments = selectAll;
+export const selectTotalAppointments = selectTotal;
 
 export const selectAllAppointmentByUserId = createSelector(selectAllAppointments,
   (appointments: Appointment[], props: { userId: number }) => {

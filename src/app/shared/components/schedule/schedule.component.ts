@@ -1,13 +1,22 @@
 import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
+import { isSameDay, isSameMonth } from 'date-fns';
 import * as moment from 'moment';
+import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppointmentsService } from '../../../core/home/appointments/services/appointments.service';
 import { StaffScheduleService } from '../../../core/staff/services/staff-schedule.service';
-import { AddDateSelected, AddScheduleSelected, AttemptLoadStaffSchedules } from '../../../core/staff/store/actions/staff-schedules.actions';
+import {
+  AddDateSelected,
+  AddScheduleSelected,
+  AttemptLoadStaffSchedules,
+  RemoveSchedule
+} from '../../../core/staff/store/actions/staff-schedules.actions';
 import { AppState } from '../../../store/reducers/app.reducer';
+import { PopupDeleteConfirmationComponent } from '../popup-delete-confirmation/popup-delete-confirmation.component';
 
 const colors: any = {
   red: {
@@ -45,17 +54,10 @@ export class ScheduleComponent implements OnInit {
   };
   actions: CalendarEventAction[] = [
     {
-      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
-      a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.handleEvent('Edited', event);
-      }
-    },
-    {
-      label: '<i class="fas fa-fw fa-trash-alt"></i>',
+      label: 'Delete',
       a11yLabel: 'Delete',
       onClick: ({ event }: { event: CalendarEvent }): void => {
-
+        this.deleteEvent(event);
       }
     }
   ];
@@ -66,7 +68,8 @@ export class ScheduleComponent implements OnInit {
   constructor(
     private store: Store<AppState>,
     private staffScheduleService: StaffScheduleService,
-    private appointmentService: AppointmentsService
+    private toastService: ToastrService,
+    private matDialog: MatDialog
   ) { }
 
   dayClicked(event): void {
@@ -81,34 +84,47 @@ export class ScheduleComponent implements OnInit {
         };
       })
     };
+    if ( isSameMonth(event.day.date, this.viewDate) ) {
+      if (
+        ( isSameDay(this.viewDate, event.day.date) && this.activeDayIsOpen === true ) ||
+        event.day.events.length === 0
+      ) {
+        this.activeDayIsOpen = false;
+      } else {
+        this.activeDayIsOpen = true;
+      }
+      this.viewDate = event.day.date;
+    }
     const date = moment(event.day.date).format('YYYY-MM-DD');
     this.store.dispatch(AddDateSelected({ dateSelected: date }));
     this.store.dispatch(AddScheduleSelected({ schedule: scheduleEvent }));
-    // if (isSameMonth(date, this.viewDate)) {
-    //   if (
-    //     (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
-    //     events.length === 0
-    //   ) {
-    //     this.activeDayIsOpen = false;
-    //   } else {
-    //     this.activeDayIsOpen = true;
-    //   }
-    //   this.viewDate = date;
-    // }
-  }
-
-  eventTimesChanged({ event, newStart, newEnd }: CalendarEventTimesChangedEvent): void {
-
-  }
-
-  handleEvent(action: string, event: CalendarEvent): void {
-  }
-
-  addEvent(): void {
   }
 
   deleteEvent(eventToDelete: CalendarEvent) {
-
+    const dialogRef = this.matDialog.open(PopupDeleteConfirmationComponent, {
+      width: '256px'
+    });
+    dialogRef.afterClosed().subscribe(response => {
+      if (response) {
+        this.staffScheduleService.deleteSchedule(parseInt(eventToDelete.id.toString(), 0)).subscribe(() => {
+          this.store.dispatch(RemoveSchedule({ id: parseInt(eventToDelete.id.toString(), 0) }));
+          this.toastService.success(`Successfully delete schedule`, '¡Success!', {
+            closeButton: true,
+            timeOut: 9000,
+            progressAnimation: 'decreasing',
+            progressBar: true
+          });
+        }, error => {
+          this.toastService.error('Failed delete schedule', '¡Oops, error!', {
+            closeButton: true,
+            timeOut: 9000,
+            progressAnimation: 'decreasing',
+            progressBar: true
+          });
+          console.error(error);
+        });
+      }
+    })
   }
 
   setView(view: CalendarView) {
@@ -121,7 +137,6 @@ export class ScheduleComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(AttemptLoadStaffSchedules());
-
     this.events$ = this.staffScheduleService.getScheduleByStaffFromStore().pipe(
       map(schedules => {
         return schedules.map((schedule, index) => {
