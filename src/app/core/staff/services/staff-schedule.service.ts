@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { filter, map, pluck, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { AppState } from '../../../store/reducers/app.reducer';
+import { AppointmentsService } from '../../home/appointments/services/appointments.service';
 import { selectUserAuthenticated } from '../../log-in/store/selectors/log-in.selectors';
 import { StaffSchedule } from '../models/staff-schedule';
 import { AddSchedulesAction } from '../store/actions/staff-schedules.actions';
@@ -17,7 +18,8 @@ export class StaffScheduleService {
 
   constructor(
     private httpClient: HttpClient,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private appointmentService: AppointmentsService
   ) { }
 
   getScheduleByStaff(): Observable<StaffSchedule[]> {

@@ -38,26 +38,36 @@
         </mat-card-content>
       </mat-card>
     </div>
-    <div class="col-4 d-flex mx-auto justify-content-center align-items-center" *ngIf="selectedAppointment$ | async
+    <div class="col-4 d-flex mx-auto" *ngIf="selectedAppointment$ | async
     as selectedAppointment">
-      <div style="color: gray; font-size: 25px"
-           class="d-flex mx-auto text-center justify-content-center align-items-center">
-        <ul>
-          <li>Patient: {{selectedAppointment.patient.name}} {{selectedAppointment.patient.lastName}}</li>
-          <li>Phone: {{selectedAppointment.patient.phone}}</li>
-          <li>Gender: {{selectedAppointment.patient.gender}}</li>
-          <li>Date Birth: {{selectedAppointment.patient.dateBirth | date: 'mediumDate'}}</li>
-        </ul>
-        <ul>
-          <li>Professional: {{selectedAppointment.user.name}} {{selectedAppointment.user.lastName}}</li>
-          <li>Phone: {{selectedAppointment.user.phone}}</li>
-          <li>Email: {{selectedAppointment.user.email}}</li>
-          <li>Dni: {{selectedAppointment.user.dni}}</li>
-        </ul>
-        <ul>
-          <li>Appointment Type: {{selectedAppointment.citationType}}</li>
-          <li>Date: {{selectedAppointment.citation | date: 'mediumDate'}}</li>
-        </ul>
+      <div class="container" style="color: gray">
+        <div class="row">
+          <div class="col-12">
+            <h2>Patient Information</h2>
+            <ul>
+              <li>Patient: {{selectedAppointment.patient.name}} {{selectedAppointment.patient.lastName}}</li>
+              <li>Phone: {{selectedAppointment.patient.phone}}</li>
+              <li>Gender: {{selectedAppointment.patient.gender}}</li>
+              <li>Date Birth: {{selectedAppointment.patient.dateBirth | date: 'mediumDate'}}</li>
+            </ul>
+          </div>
+          <div class="col-12">
+            <h2>Professional Information</h2>
+            <ul>
+              <li>Professional: {{selectedAppointment.user.name}} {{selectedAppointment.user.lastName}}</li>
+              <li>Phone: {{selectedAppointment.user.phone}}</li>
+              <li>Email: {{selectedAppointment.user.email}}</li>
+              <li>Dni: {{selectedAppointment.user.dni}}</li>
+            </ul>
+          </div>
+          <div class="col-12">
+            <h2>Appointment Information</h2>
+            <ul>
+              <li>Appointment Type: {{selectedAppointment.citationType}}</li>
+              <li>Date: {{selectedAppointment.citation | date: 'mediumDate'}}</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

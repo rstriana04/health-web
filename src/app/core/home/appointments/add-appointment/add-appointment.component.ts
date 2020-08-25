@@ -1,17 +1,20 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatOptionSelectionChange } from '@angular/material/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
+import { ToastrService } from 'ngx-toastr';
 import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AppState } from '../../../../store/reducers/app.reducer';
 import { Patient } from '../../../patient/models/patient';
 import { PatientService } from '../../../patient/services/patient.service';
 import { AddSelectedPatient } from '../../../patient/store/actions/patient.actions';
-import { selectStaffScheduleSelected } from '../../../staff/store/selectors/staff-schedules.selectors';
+import { selectDateSelected, selectStaffScheduleSelected } from '../../../staff/store/selectors/staff-schedules.selectors';
 import { Appointment } from '../models/appointment';
 import { AppointmentsService } from '../services/appointments.service';
 import { AddAppointment, AddCitationType } from '../store/actions/appointments.actions';
+import { selectAppointmentsByDate, selectAppointmentState } from '../store/selectors/appointment.selectors';
 
 @Component({
   selector: 'health-add-appointment',
@@ -27,7 +30,10 @@ export class AddAppointmentComponent implements OnInit {
   constructor(
     private store: Store<AppState>,
     private patientService: PatientService,
-    private appointmentService: AppointmentsService
+    private appointmentService: AppointmentsService,
+    private toastService: ToastrService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
   }
 
@@ -41,27 +47,50 @@ export class AddAppointmentComponent implements OnInit {
     ).subscribe(appointment => {
       if ( appointment && Object.keys(appointment).length ) {
         this.store.dispatch(AddAppointment({ appointment }));
+        this.toastService.info('¡New Appointment!', '¡Info!', {
+          progressBar: true,
+          timeOut: 9000,
+          progressAnimation: 'decreasing',
+          closeButton: true
+        });
       }
     });
     this.schedule$ = this.getSchedule();
     this.patients$ = this.patientService.getPatientsByStaffFromStore();
   }
 
-  private getSchedule(): Observable<any> {
+  public getSchedule(): Observable<any> {
     return this.store.pipe(
-      select(selectStaffScheduleSelected),
-      filter(schedule => !!schedule && !!Object.keys(schedule).length),
-      map(daySchedule => {
-        return daySchedule.events.map(day => {
+      select(selectDateSelected),
+      switchMap(dateSelected => this.store.pipe(
+        select(selectAppointmentState),
+        select(selectAppointmentsByDate, { date: dateSelected })
+      )),
+      switchMap(appointments => this.store.pipe(
+        select(selectStaffScheduleSelected),
+        map(staffSchedule => {
+          return {
+            appointments,
+            staffSchedule
+          };
+        })
+      )),
+      filter(items => !!(  items.staffSchedule && Object.keys(items.staffSchedule).length )),
+      map(items => {
+        const daySchedule = items.staffSchedule.events.map(day => {
           return {
             ...day,
             start: moment(day.start),
             end: moment(day.end)
           };
         });
+        return {
+          appointments: items.appointments,
+          daySchedule
+        };
       }),
-      map(daySchedule => {
-        return daySchedule.map(event => {
+      map(items => {
+        const hours = items.daySchedule.map(event => {
           const hoursSchedule = [];
           let i = 0;
           while ( event.start.isBefore(event.end) ) {
@@ -72,21 +101,22 @@ export class AddAppointmentComponent implements OnInit {
             event.start.add(event.interval, 'm');
             i++;
           }
-          console.log(hoursSchedule);
           return hoursSchedule;
         });
+        return { appointments: items.appointments, hoursSchedules: hours };
+      }),
+      map(items => {
+        return items.hoursSchedules.map(hours => {
+          return hours.map(turn => {
+            const citation = items.appointments.find(
+              appointment => moment(appointment.citation).format('YYYY-MM-DD HH:mm:ss') === turn.hour);
+            return {
+              ...turn,
+              citation
+            };
+          });
+        });
       })
-      // tap(hoursSchedules => {
-      //   console.log(hoursSchedules);
-      //   // return hoursSchedules.map(hourSchedule => {
-      //   //   const citation = !!hourSchedule.appointments.length ? hourSchedule.appointments.find(
-      //   //     appointment => moment(appointment.citation).format('YYYY-MM-DD HH:mm:ss') === hourSchedule.hour) : {};
-      //   //   return {
-      //   //     ...hourSchedule,
-      //   //     citation
-      //   //   };
-      //   // })
-      // })
     );
   }
 
@@ -98,5 +128,9 @@ export class AddAppointmentComponent implements OnInit {
 
   public setType(type: string) {
     this.store.dispatch(AddCitationType({ citationType: type }));
+  }
+
+  public back() {
+    this.router.navigate(['../list'], {relativeTo: this.activatedRoute});
   }
 }

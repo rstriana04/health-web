@@ -1,3 +1,4 @@
+import { Appointment } from '../../home/appointments/models/appointment';
 import { User } from '../../sign-up/models/user';
 
 export interface StaffSchedule {
@@ -9,4 +10,5 @@ export interface StaffSchedule {
   user?: User;
   valid?: boolean;
   day?: number;
+  citation?: Appointment
 }

@@ -2,6 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { selectHomeState } from '../../../store/selectors/home.selectors';
 import { Appointment } from '../../models/appointment';
 import { adapterAppointment } from '../reducers/appointment.reducer';
+import * as moment from 'moment';
 
 export const selectAppointmentState = createSelector(selectHomeState, state => state.appointments);
 
@@ -21,4 +22,7 @@ export const selectAllAppointmentByUserId = createSelector(selectAllAppointments
 
 export const selectSelectedAppointment = createSelector(selectAppointmentState, state => state.selectedAppointment);
 export const selectCitationType = createSelector(selectAppointmentState, state => state.citationType);
+export const selectAppointmentsByDate = createSelector(selectAllAppointments, (appointments: Appointment[], props: { date: string }) => {
+  return appointments.filter(appointment => moment(appointment.citation).format('YYYY-MM-DD') === moment(props.date).format('YYYY-MM-DD'));
+});
 

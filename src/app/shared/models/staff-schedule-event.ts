@@ -1,3 +1,4 @@
+import { Appointment } from '../../core/home/appointments/models/appointment';
 import { User } from '../../core/sign-up/models/user';
 
 export interface StaffScheduleEvent {
@@ -17,4 +18,5 @@ export interface StaffScheduleEvent {
   updatedAt: string;
   user: User;
   hour?: string;
+  citation?: Appointment
 }

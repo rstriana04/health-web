@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { AppState } from '../../../../store/reducers/app.reducer';
+import { AppointmentsService } from '../../../home/appointments/services/appointments.service';
 import { StaffScheduleService } from '../../services/staff-schedule.service';
 import { FailedAttemptLoadStaffSchedules, SuccessAttemptLoadStaffSchedules } from '../actions/staff-schedules.actions';
 
@@ -29,6 +30,7 @@ export class StaffSchedulesEffects {
   constructor(
     private store: Store<AppState>,
     private actions$: Actions,
-    private staffScheduleService: StaffScheduleService
+    private staffScheduleService: StaffScheduleService,
+    private appointmentService: AppointmentsService
   ) {}
 }

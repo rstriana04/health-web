@@ -13,3 +13,4 @@ const {
 
 export const selectAllSchedules = selectAll;
 export const selectStaffScheduleSelected = createSelector(selectStateStaffSchedules, state => state.scheduleSelected);
+export const selectDateSelected = createSelector(selectStateStaffSchedules, state => state.dateSelected);
